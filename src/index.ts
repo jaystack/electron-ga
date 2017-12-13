@@ -1,25 +1,11 @@
 import { stringify } from 'qs';
 import { remote } from 'electron';
 import { machineIdSync } from 'node-machine-id';
+import { InitParams, Param } from './types';
 
 const URL = 'https://www.google-analytics.com/batch';
 const CACHE_ITEM_NAME = 'analytics-cache';
 const BATCH_SIZE = 20;
-
-export type ParamGetter<T> = () => T;
-
-export type InitParams = {
-  apiVersion?: string | ParamGetter<string>;
-  trackId?: string | ParamGetter<string>;
-  clientId?: string | ParamGetter<string>;
-  userId?: string | ParamGetter<string>;
-  appName?: string | ParamGetter<string>;
-  appVersion?: string | ParamGetter<string>;
-  language?: string | ParamGetter<string>;
-  userAgent?: string | ParamGetter<string>;
-  viewport?: string | ParamGetter<string>;
-  screenResolution?: string | ParamGetter<string>;
-};
 
 export default class {
   private trackId: string;
@@ -83,7 +69,7 @@ const getDefaultInitParams = (): InitParams => ({
   }
 });
 
-const resolveParam = <T>(value: T | ParamGetter<T>): T => (typeof value === 'function' ? value() : value);
+const resolveParam = <T>(value: Param<T>): T => (typeof value === 'function' ? value() : value);
 
 const getCache = (): any[] => {
   const cache = window.localStorage.getItem(CACHE_ITEM_NAME);
