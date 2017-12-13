@@ -45,6 +45,8 @@ export default class {
     const cache = getCache();
     const items = prepareItems([ ...cache, params ], now);
     const batches = getBatches(items);
+    const failedItems = await sendBatches(batches);
+    setCache(failedItems);
   }
 
   private getParams(hitType: string, additionalParams: object = {}, time: number) {
@@ -102,3 +104,13 @@ const getBatches = (items: any[]): any[][] =>
         : [ ...batches.slice(0, batches.length - 1), [ ...batches[batches.length - 1], item ] ],
     [ [] ]
   );
+
+const sendBatches = async ([ batch, ...others ], failedItems: any[] = []): Promise<any[]> => {
+  if (!batch) return failedItems;
+  try {
+    await fetch(URL, { method: 'post', body: batch.map(item => stringify(item)).join('\n') });
+    return await sendBatches(others, failedItems);
+  } catch (error) {
+    return await sendBatches(others, [ ...failedItems, ...batch ]);
+  }
+};
