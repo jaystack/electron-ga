@@ -20,5 +20,34 @@
   "bugs": {
     "url": "https://github.com/jaystack/electron-ga/issues"
   },
-  "homepage": "https://github.com/jaystack/electron-ga#readme"
+  "homepage": "https://github.com/jaystack/electron-ga#readme",
+  "jest": {
+    "globals": {
+      "ts-test": {
+        "tsConfigFile": "tsconfig.json"
+      }
+    },
+    "moduleFileExtensions": [
+      "ts",
+      "js"
+    ],
+    "transform": {
+      "^.+\\.(ts)$": "./node_modules/ts-jest/preprocessor.js"
+    },
+    "testMatch": [
+      "**/test/**/*.spec.(ts|js)"
+    ],
+    "testEnvironment": "node"
+  },
+  "devDependencies": {
+    "@types/jest": "^21.1.8",
+    "@types/node": "^8.0.58",
+    "jest": "^21.2.1",
+    "rimraf": "^2.6.2",
+    "rollup": "^0.52.1",
+    "rollup-plugin-typescript2": "^0.8.4",
+    "rollup-plugin-uglify": "^2.0.1",
+    "ts-jest": "^21.2.4",
+    "typescript": "^2.6.2"
+  }
 }
