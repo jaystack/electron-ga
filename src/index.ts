@@ -1,6 +1,7 @@
 import { InitParams, Item } from './types';
 import { getDefaultInitParams, prepareItems, getBatches, sendBatches, resolveParam } from './helpers';
 import { getNow, getCache, setCache } from './side-effects';
+import { BATCH_SIZE } from './consts';
 
 export class Analytics {
   private trackId: string;
@@ -25,7 +26,7 @@ export class Analytics {
     const params = this.getParams(hitType, additionalParams, now);
     const cache = getCache();
     const items = prepareItems([ ...cache, params ], now);
-    const batches = getBatches(items);
+    const batches = getBatches(items, BATCH_SIZE);
     const failedItems = await sendBatches(batches);
     setCache(failedItems);
   }

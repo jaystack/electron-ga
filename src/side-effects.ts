@@ -11,10 +11,7 @@ export const getClientId = () => machineIdSync();
 
 export const getLanguage = (): string => window.navigator.language;
 
-export const getUserAgent = (appName: string): string =>
-  window.navigator.userAgent
-    .replace(new RegExp(`${appName}\/\d+\\.\d+\\.\d+ `), '')
-    .replace(/Electron\/\d+\.\d+\.\d+ /, '');
+export const getUserAgent = (): string => window.navigator.userAgent;
 
 export const getViewport = () => `${window.innerWidth}x${window.innerHeight}`;
 
@@ -34,4 +31,4 @@ export const setCache = (cache: object[]): void => {
   window.localStorage.setItem(CACHE_KEY_NAME, JSON.stringify(cache));
 };
 
-export const fetch = window.fetch;
+export const fetch = (url, options) => window.fetch(url, options);

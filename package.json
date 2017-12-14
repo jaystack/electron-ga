@@ -29,6 +29,7 @@
   "homepage": "https://github.com/jaystack/electron-ga#readme",
   "jest": {
     "globals": {
+      "window": true,
       "ts-test": {
         "tsConfigFile": "tsconfig.json"
       }
