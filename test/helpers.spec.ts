@@ -82,7 +82,6 @@ describe('helpers', () => {
     getUserAgent.mockReturnValue(
       'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) AppleWebKit/537.36 (KHTML, like Gecko) abc-xyz.io/1.0.0 Chrome/58.0.3029.110 Electron/1.7.9 Safari/537.36'
     );
-    const viewPortImplementation = () => '100x100';
     getViewport.mockReturnValue('100x100');
     getScreenResolution.mockReturnValue('200x200');
     it('create init params', () => {
