@@ -1,5 +1,5 @@
 import { stringify } from 'qs';
-import { InitParams, Param } from './types';
+import { InitParams, Param, Item } from './types';
 import { URL, BATCH_SIZE } from './consts';
 import {
   getAppName,
@@ -28,10 +28,10 @@ export const getDefaultInitParams = (): InitParams => {
 
 export const resolveParam = <T>(value: Param<T>): T => (typeof value === 'function' ? value() : value);
 
-export const prepareItems = (items: any[], time): any[] =>
+export const prepareItems = (items: Item[], time): Item[] =>
   items.map(item => ({ ...item, qt: time - item.__timestamp }));
 
-export const getBatches = (items: any[]): any[][] =>
+export const getBatches = (items: Item[]): Item[][] =>
   items.reduce(
     (batches, item) =>
       batches[batches.length - 1].length >= BATCH_SIZE
@@ -40,7 +40,7 @@ export const getBatches = (items: any[]): any[][] =>
     [ [] ]
   );
 
-export const sendBatches = async ([ batch, ...others ], failedItems: any[] = []): Promise<any[]> => {
+export const sendBatches = async ([ batch, ...others ]: Item[][], failedItems: Item[] = []): Promise<Item[]> => {
   if (!batch) return failedItems;
   try {
     await fetch(URL, { method: 'post', body: batch.map(item => stringify(item)).join('\n') });

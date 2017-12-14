@@ -1,4 +1,4 @@
-import { InitParams } from './types';
+import { InitParams, Item } from './types';
 import { getDefaultInitParams, prepareItems, getBatches, sendBatches, resolveParam } from './helpers';
 import { getNow, getCache, setCache } from './side-effects';
 
@@ -30,7 +30,7 @@ export class Analytics {
     setCache(failedItems);
   }
 
-  private getParams(hitType: string, additionalParams: object = {}, time: number) {
+  private getParams(hitType: string, additionalParams = {}, time: number): Item {
     return {
       __timestamp: time,
       t: hitType,

@@ -1,6 +1,7 @@
 import { remote } from 'electron';
 import { machineIdSync } from 'node-machine-id';
 import { CACHE_KEY_NAME } from './consts';
+import { Item } from './types';
 
 export const getAppName = () => remote.app.getName();
 
@@ -20,11 +21,11 @@ export const getViewport = () => `${window.innerWidth}x${window.innerHeight}`;
 export const getScreenResolution = () => {
   const screen = remote.screen.getPrimaryDisplay();
   return `${screen.size.width}x${screen.size.height}`;
-}
+};
 
 export const getNow = () => Date.now();
 
-export const getCache = (): any[] => {
+export const getCache = (): Item[] => {
   const cache = window.localStorage.getItem(CACHE_KEY_NAME);
   return cache ? JSON.parse(cache) : [];
 };

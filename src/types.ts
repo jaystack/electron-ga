@@ -14,3 +14,8 @@ export type InitParams = {
   viewport?: Param<string>;
   screenResolution?: Param<string>;
 };
+
+export type Item = {
+  __timestamp: number;
+  [key: string]: string | number;
+};
