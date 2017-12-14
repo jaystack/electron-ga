@@ -3,24 +3,24 @@ import { machineIdSync } from 'node-machine-id';
 import { CACHE_KEY_NAME } from './consts';
 import { Item } from './types';
 
-export const getAppName = () => remote.app.getName();
+export const getAppName = (): string => remote.app.getName();
 
-export const getAppVersion = () => remote.app.getVersion();
+export const getAppVersion = (): string => remote.app.getVersion();
 
-export const getClientId = () => machineIdSync();
+export const getClientId = (): string => machineIdSync();
 
 export const getLanguage = (): string => window.navigator.language;
 
 export const getUserAgent = (): string => window.navigator.userAgent;
 
-export const getViewport = () => `${window.innerWidth}x${window.innerHeight}`;
+export const getViewport = (): string => `${window.innerWidth}x${window.innerHeight}`;
 
-export const getScreenResolution = () => {
+export const getScreenResolution = (): string => {
   const screen = remote.screen.getPrimaryDisplay();
   return `${screen.size.width}x${screen.size.height}`;
 };
 
-export const getNow = () => Date.now();
+export const getNow = (): number => Date.now();
 
 export const getCache = (): Item[] => {
   const cache = window.localStorage.getItem(CACHE_KEY_NAME);
