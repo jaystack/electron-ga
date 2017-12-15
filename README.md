@@ -29,7 +29,7 @@ const analytics = new Analytics('UA-XXXXXXXX-X');
 Then:
 
 ```js
-await analytics.send('screenview', 'User List');
+await analytics.send('screenview', { cd: 'User List' });
 await analytics.send('event', { ec: 'Scroll', ea: 'scrollto', el: 'row', ev: 123 });
 ```
 
