@@ -1,6 +1,6 @@
 import 'jest';
 import Analytics from '../src/index';
-import { URL } from '../src/consts';
+import { URL, RETRY } from '../src/consts';
 
 jest.mock('../src/side-effects');
 const {
@@ -11,6 +11,7 @@ const {
   getUserAgent,
   getViewport,
   getScreenResolution,
+  retry,
   fetch,
   getCache,
   setCache,
@@ -26,6 +27,11 @@ describe('Analytics', () => {
     getUserAgent.mockClear();
     getViewport.mockClear();
     getScreenResolution.mockClear();
+    getCache.mockClear();
+    setCache.mockClear();
+    getNow.mockClear();
+    fetch.mockClear();
+    retry.mockClear();
 
     getAppName.mockReturnValue('abc-xyz.io');
     getClientId.mockReturnValue('123');
@@ -73,6 +79,11 @@ describe('Analytics', () => {
       expect((<() => string>analytics['viewport'])()).toEqual('100x100');
       expect((<() => string>analytics['screenResolution'])()).toEqual('200x200');
     });
+
+    it('starts the retry scheduling', () => {
+      const analytics = new Analytics('123456');
+      expect(retry).toBeCalledWith(analytics.send, RETRY);
+    });
   });
 
   describe('method getParams', () => {
@@ -100,6 +111,44 @@ describe('Analytics', () => {
   });
 
   describe('method send', () => {
+    it('send only cache', async () => {
+      getNow.mockReturnValue(50);
+      getCache.mockReturnValue([
+        { __timestamp: 10, tid: '123456', a: 1 },
+        { __timestamp: 20, tid: '123456', a: 2 },
+        { __timestamp: 30, tid: 'abcdef', a: 3 }
+      ]);
+      fetch.mockReturnValue(Promise.resolve());
+
+      const analytics = new Analytics('123456');
+      await analytics.send();
+
+      expect(fetch.mock.calls[0][0]).toEqual(URL);
+      expect(fetch.mock.calls[0][1]).toEqual({
+        method: 'post',
+        body:
+          '__timestamp=10&tid=123456&a=1&qt=40\n__timestamp=20&tid=123456&a=2&qt=30\n__timestamp=30&tid=123456&a=3&qt=20'
+      });
+      expect(setCache).toBeCalledWith([]);
+    });
+
+    it('sends event without cache', async () => {
+      getNow.mockReturnValue(50);
+      getCache.mockReturnValue([]);
+      fetch.mockReturnValue(Promise.resolve());
+
+      const analytics = new Analytics('123456');
+      await analytics.send('event', { ec: 'Video', ea: 'play', el: 'solarpod', ev: 123 });
+
+      expect(fetch.mock.calls[0][0]).toEqual(URL);
+      expect(fetch.mock.calls[0][1]).toEqual({
+        method: 'post',
+        body:
+          '__timestamp=50&t=event&v=1&tid=123456&cid=123&an=abc-xyz.io&av=1.0.0&ul=en-GB&ua=Mozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_13_1%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F58.0.3029.110%20Safari%2F537.36&vp=100x100&sr=200x200&ec=Video&ea=play&el=solarpod&ev=123&qt=0'
+      });
+      expect(setCache).toBeCalledWith([]);
+    });
+
     it('sends event with cache', async () => {
       getNow.mockReturnValue(50);
       getCache.mockReturnValue([
@@ -119,6 +168,43 @@ describe('Analytics', () => {
           '__timestamp=10&tid=123456&a=1&qt=40\n__timestamp=20&tid=123456&a=2&qt=30\n__timestamp=30&tid=123456&a=3&qt=20\n__timestamp=50&t=event&v=1&tid=123456&cid=123&an=abc-xyz.io&av=1.0.0&ul=en-GB&ua=Mozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_13_1%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F58.0.3029.110%20Safari%2F537.36&vp=100x100&sr=200x200&ec=Video&ea=play&el=solarpod&ev=123&qt=0'
       });
       expect(setCache).toBeCalledWith([]);
+    });
+
+    it('cannot send event without cache', async () => {
+      getNow.mockReturnValue(50);
+      getCache.mockReturnValue([]);
+      fetch.mockReturnValue(Promise.reject(new Error()));
+
+      const analytics = new Analytics('123456');
+      await analytics.send('event', { ec: 'Video', ea: 'play', el: 'solarpod', ev: 123 });
+
+      expect(fetch.mock.calls[0][0]).toEqual(URL);
+      expect(fetch.mock.calls[0][1]).toEqual({
+        method: 'post',
+        body:
+          '__timestamp=50&t=event&v=1&tid=123456&cid=123&an=abc-xyz.io&av=1.0.0&ul=en-GB&ua=Mozilla%2F5.0%20%28Macintosh%3B%20Intel%20Mac%20OS%20X%2010_13_1%29%20AppleWebKit%2F537.36%20%28KHTML%2C%20like%20Gecko%29%20Chrome%2F58.0.3029.110%20Safari%2F537.36&vp=100x100&sr=200x200&ec=Video&ea=play&el=solarpod&ev=123&qt=0'
+      });
+      expect(setCache).toBeCalledWith([
+        {
+          __timestamp: 50,
+          t: 'event',
+          v: '1',
+          tid: '123456',
+          cid: '123',
+          an: 'abc-xyz.io',
+          av: '1.0.0',
+          ul: 'en-GB',
+          ua:
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36',
+          vp: '100x100',
+          sr: '200x200',
+          ec: 'Video',
+          ea: 'play',
+          el: 'solarpod',
+          ev: 123,
+          qt: 0
+        }
+      ]);
     });
 
     it('cannot send event with cache', async () => {

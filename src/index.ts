@@ -1,7 +1,7 @@
 import { InitParams, Item, Param } from './types';
 import { getDefaultInitParams, prepareItems, getBatches, sendBatches, resolveParam } from './helpers';
-import { getNow, getCache, setCache } from './side-effects';
-import { BATCH_SIZE } from './consts';
+import { getNow, getCache, setCache, retry } from './side-effects';
+import { BATCH_SIZE, RETRY } from './consts';
 
 export class Analytics {
   private trackId: Param<string>;
@@ -19,17 +19,18 @@ export class Analytics {
     this.trackId = trackId;
     const initParams = { ...getDefaultInitParams(), ...params };
     Object.keys(initParams).forEach(key => (this[key] = initParams[key]));
+    retry(this.send, RETRY);
   }
 
-  public async send(hitType: string, additionalParams: object = {}) {
+  public send = async (hitType?: string, additionalParams: object = {}) => {
     const now = getNow();
-    const params = this.getParams(hitType, additionalParams, now);
+    const params = hitType ? this.getParams(hitType, additionalParams, now) : null;
     const cache = getCache();
-    const items = prepareItems([ ...cache, params ], this.trackId, now);
+    const items = prepareItems([ ...cache, params ].filter(_ => _), this.trackId, now);
     const batches = getBatches(items, BATCH_SIZE);
     const failedItems = await sendBatches(batches);
     setCache(failedItems);
-  }
+  };
 
   private getParams(hitType: string, additionalParams = {}, time: number): Item {
     return {

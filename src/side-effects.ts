@@ -31,4 +31,6 @@ export const setCache = (cache: object[]): void => {
   window.localStorage.setItem(CACHE_KEY_NAME, JSON.stringify(cache));
 };
 
+export const retry = (cb: Function, schedule: number) => setInterval(cb, schedule);
+
 export const fetch = (url, options) => window.fetch(url, options);
