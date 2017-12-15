@@ -111,6 +111,17 @@ describe('Analytics', () => {
   });
 
   describe('method send', () => {
+    it('do not send nothing by retry if cache is empty', async () => {
+      getCache.mockReturnValue([]);
+      fetch.mockReturnValue(Promise.resolve());
+
+      const analytics = new Analytics('123456');
+      await analytics.send();
+
+      expect(fetch.mock.calls.length).toEqual(0);
+      expect(setCache.mock.calls.length).toEqual(0);
+    });
+
     it('send only cache', async () => {
       getNow.mockReturnValue(50);
       getCache.mockReturnValue([

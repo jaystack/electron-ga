@@ -27,6 +27,7 @@ export class Analytics {
     const params = hitType ? this.getParams(hitType, additionalParams, now) : null;
     const cache = getCache();
     const items = prepareItems([ ...cache, params ].filter(_ => _), this.trackId, now);
+    if (items.length === 0) return;
     const batches = getBatches(items, BATCH_SIZE);
     const failedItems = await sendBatches(batches);
     setCache(failedItems);
