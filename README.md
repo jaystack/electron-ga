@@ -66,3 +66,13 @@ const analytics = new Analytics('UA-XXXXXXXX-X', {
 The `hitType` is a string. You can find here the [available values](https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters#t).
 
 The `additionalParams` is an object with any properties, which are acceptable by the [Google Analytics Measurement Protocol](https://developers.google.com/analytics/devguides/collection/protocol/v1/parameters).
+
+---
+
+## License
+
+[MIT](https://spdx.org/licenses/MIT)
+
+## Developed by
+
+[![JayStack](http://jaystack.com/wp-content/uploads/2017/08/jaystack_logo_transparent_50.png)](http://jaystack.com/)
