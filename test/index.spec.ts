@@ -43,7 +43,7 @@ describe('Analytics', () => {
       const analytics = new Analytics('123456');
 
       expect(analytics).toHaveProperty('trackId', '123456');
-      expect(analytics).toHaveProperty('apiVersion', '1');
+      expect(analytics).toHaveProperty('protocolVersion', '1');
       expect(analytics).toHaveProperty('clientId', '123');
       expect(analytics).toHaveProperty('appName', 'abc-xyz.io');
       expect(analytics).toHaveProperty('appVersion', '1.0.0');
@@ -60,7 +60,7 @@ describe('Analytics', () => {
       const analytics = new Analytics('123456', { userId: '111', clientId: 'aaa', language: () => 'hu' });
 
       expect(analytics).toHaveProperty('trackId', '123456');
-      expect(analytics).toHaveProperty('apiVersion', '1');
+      expect(analytics).toHaveProperty('protocolVersion', '1');
       expect(analytics).toHaveProperty('clientId', 'aaa');
       expect(analytics).toHaveProperty('userId', '111');
       expect(analytics).toHaveProperty('appName', 'abc-xyz.io');

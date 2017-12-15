@@ -5,7 +5,7 @@ import { BATCH_SIZE } from './consts';
 
 export class Analytics {
   private trackId: Param<string>;
-  private apiVersion: Param<string>;
+  private protocolVersion: Param<string>;
   private clientId: Param<string>;
   private userId: Param<string>;
   private appName: Param<string>;
@@ -35,7 +35,7 @@ export class Analytics {
     return {
       __timestamp: time,
       t: hitType,
-      v: resolveParam(this.apiVersion),
+      v: resolveParam(this.protocolVersion),
       tid: resolveParam(this.trackId),
       cid: resolveParam(this.clientId),
       an: resolveParam(this.appName),

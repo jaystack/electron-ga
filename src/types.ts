@@ -3,7 +3,7 @@ export type ParamGetter<T> = () => T;
 export type Param<T> = T | ParamGetter<T>;
 
 export type InitParams = {
-  apiVersion?: Param<string>;
+  protocolVersion?: Param<string>;
   trackId?: Param<string>;
   clientId?: Param<string>;
   userId?: Param<string>;

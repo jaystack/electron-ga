@@ -18,7 +18,7 @@ export const prepareUserAgent = (userAgent: string, appName: string) =>
 export const getDefaultInitParams = (): InitParams => {
   const appName = getAppName();
   return {
-    apiVersion: '1',
+    protocolVersion: '1',
     clientId: getClientId(),
     appName,
     appVersion: getAppVersion(),

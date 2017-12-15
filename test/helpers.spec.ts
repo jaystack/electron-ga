@@ -87,7 +87,7 @@ describe('helpers', () => {
     it('create init params', () => {
       const result = getDefaultInitParams();
       expect(result).toEqual({
-        apiVersion: '1',
+        protocolVersion: '1',
         clientId: '123',
         appName: 'abc-xyz.io',
         appVersion: '1.0.0',
