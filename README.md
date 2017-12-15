@@ -18,6 +18,8 @@
 
 ## Easy to start using
 
+[electron-ga]() works only in [renderer process](https://electronjs.org/docs/tutorial/quick-start#renderer-process).
+
 ```js
 import Analytics from 'electron-ga';
 

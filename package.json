@@ -48,6 +48,9 @@
     ],
     "testEnvironment": "node"
   },
+  "peerDependencies": {
+    "electron": "^1.7.9"
+  },
   "devDependencies": {
     "@types/electron": "^1.6.10",
     "@types/jest": "^21.1.8",
@@ -61,7 +64,6 @@
     "typescript": "^2.6.2"
   },
   "dependencies": {
-    "electron": "^1.7.9",
     "node-machine-id": "^1.1.9"
   }
 }
