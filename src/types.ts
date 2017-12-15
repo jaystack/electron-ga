@@ -17,5 +17,6 @@ export type InitParams = {
 
 export type Item = {
   __timestamp: number;
+  tid: string;
   [key: string]: string | number;
 };

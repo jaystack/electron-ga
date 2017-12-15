@@ -1,19 +1,19 @@
-import { InitParams, Item } from './types';
+import { InitParams, Item, Param } from './types';
 import { getDefaultInitParams, prepareItems, getBatches, sendBatches, resolveParam } from './helpers';
 import { getNow, getCache, setCache } from './side-effects';
 import { BATCH_SIZE } from './consts';
 
 export class Analytics {
-  private trackId: string;
-  private apiVersion: string;
-  private clientId: string;
-  private userId: string;
-  private appName: string;
-  private appVersion: string;
-  private language: string;
-  private userAgent: string;
-  private viewport: string;
-  private screenResolution: string;
+  private trackId: Param<string>;
+  private apiVersion: Param<string>;
+  private clientId: Param<string>;
+  private userId: Param<string>;
+  private appName: Param<string>;
+  private appVersion: Param<string>;
+  private language: Param<string>;
+  private userAgent: Param<string>;
+  private viewport: Param<string>;
+  private screenResolution: Param<string>;
 
   constructor(trackId: string, params: InitParams = {}) {
     this.trackId = trackId;
@@ -25,7 +25,7 @@ export class Analytics {
     const now = getNow();
     const params = this.getParams(hitType, additionalParams, now);
     const cache = getCache();
-    const items = prepareItems([ ...cache, params ], now);
+    const items = prepareItems([ ...cache, params ], this.trackId, now);
     const batches = getBatches(items, BATCH_SIZE);
     const failedItems = await sendBatches(batches);
     setCache(failedItems);

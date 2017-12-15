@@ -42,10 +42,9 @@ describe('helpers', () => {
 
   describe('prepareItems', () => {
     it('extends items with qt property', () => {
-      expect(prepareItems([ { a: 1, __timestamp: 10 }, { b: 2, __timestamp: 15 } ], 20)).toEqual([
-        { a: 1, __timestamp: 10, qt: 10 },
-        { b: 2, __timestamp: 15, qt: 5 }
-      ]);
+      expect(
+        prepareItems([ { a: 1, tid: 'abc', __timestamp: 10 }, { b: 2, tid: '123', __timestamp: 15 } ], '123', 20)
+      ).toEqual([ { a: 1, tid: '123', __timestamp: 10, qt: 10 }, { b: 2, tid: '123', __timestamp: 15, qt: 5 } ]);
     });
   });
 
@@ -84,6 +83,7 @@ describe('helpers', () => {
     );
     getViewport.mockReturnValue('100x100');
     getScreenResolution.mockReturnValue('200x200');
+
     it('create init params', () => {
       const result = getDefaultInitParams();
       expect(result).toEqual({
@@ -116,24 +116,36 @@ describe('helpers', () => {
     it('send all batches', async () => {
       fetch.mockReturnValue(Promise.resolve());
       expect(
-        await sendBatches([ [ { __timestamp: 1, a: 1 }, { __timestamp: 2, a: 2 } ], [ { __timestamp: 3, a: 3 } ] ])
+        await sendBatches([
+          [ { __timestamp: 1, tid: '123', a: 1 }, { __timestamp: 2, tid: '123', a: 2 } ],
+          [ { __timestamp: 3, tid: '123', a: 3 } ]
+        ])
       ).toEqual([]);
       expect(fetch.mock.calls[0][0]).toEqual(URL);
-      expect(fetch.mock.calls[0][1]).toEqual({ method: 'post', body: '__timestamp=1&a=1\n__timestamp=2&a=2' });
+      expect(fetch.mock.calls[0][1]).toEqual({
+        method: 'post',
+        body: '__timestamp=1&tid=123&a=1\n__timestamp=2&tid=123&a=2'
+      });
       expect(fetch.mock.calls[1][0]).toEqual(URL);
-      expect(fetch.mock.calls[1][1]).toEqual({ method: 'post', body: '__timestamp=3&a=3' });
+      expect(fetch.mock.calls[1][1]).toEqual({ method: 'post', body: '__timestamp=3&tid=123&a=3' });
     });
 
     it('collects failed items', async () => {
       fetch.mockReturnValueOnce(Promise.reject(new Error()));
       fetch.mockReturnValueOnce(Promise.resolve());
       expect(
-        await sendBatches([ [ { __timestamp: 1, a: 1 }, { __timestamp: 2, a: 2 } ], [ { __timestamp: 3, a: 3 } ] ])
-      ).toEqual([ { __timestamp: 1, a: 1 }, { __timestamp: 2, a: 2 } ]);
+        await sendBatches([
+          [ { __timestamp: 1, tid: '123', a: 1 }, { __timestamp: 2, tid: '123', a: 2 } ],
+          [ { __timestamp: 3, tid: '123', a: 3 } ]
+        ])
+      ).toEqual([ { __timestamp: 1, tid: '123', a: 1 }, { __timestamp: 2, tid: '123', a: 2 } ]);
       expect(fetch.mock.calls[0][0]).toEqual(URL);
-      expect(fetch.mock.calls[0][1]).toEqual({ method: 'post', body: '__timestamp=1&a=1\n__timestamp=2&a=2' });
+      expect(fetch.mock.calls[0][1]).toEqual({
+        method: 'post',
+        body: '__timestamp=1&tid=123&a=1\n__timestamp=2&tid=123&a=2'
+      });
       expect(fetch.mock.calls[1][0]).toEqual(URL);
-      expect(fetch.mock.calls[1][1]).toEqual({ method: 'post', body: '__timestamp=3&a=3' });
+      expect(fetch.mock.calls[1][1]).toEqual({ method: 'post', body: '__timestamp=3&tid=123&a=3' });
     });
   });
 });

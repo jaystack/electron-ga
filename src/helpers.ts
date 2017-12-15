@@ -31,8 +31,8 @@ export const getDefaultInitParams = (): InitParams => {
 
 export const resolveParam = <T>(value: Param<T>): T => (typeof value === 'function' ? value() : value);
 
-export const prepareItems = (items: Item[], time): Item[] =>
-  items.map(item => ({ ...item, qt: time - item.__timestamp }));
+export const prepareItems = (items: Item[], trackId, time): Item[] =>
+  items.map(item => ({ ...item, tid: trackId, qt: time - item.__timestamp }));
 
 export const getBatches = (items: Item[], batchSize: number): Item[][] =>
   items.reduce(
