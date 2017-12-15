@@ -18,7 +18,9 @@
 
 ## Easy to start using
 
-[electron-ga]() works only in [renderer process](https://electronjs.org/docs/tutorial/quick-start#renderer-process).
+First create a [Google Analytics Mobile Account](https://developers.google.com/analytics/solutions/mobile). It is needed, because webpage account does not track many parameters, like version. In many aspect an [Electron](https://electronjs.org/) application is more similar to a mobile application than a simple webpage.
+
+[electron-ga]() works only in the [renderer process](https://electronjs.org/docs/tutorial/quick-start#renderer-process).
 
 ```js
 import Analytics from 'electron-ga';
