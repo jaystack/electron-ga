@@ -1,6 +1,6 @@
 {
   "name": "electron-ga",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Google Analytics client for Electron applications",
   "main": "lib/index.js",
   "typings": "lib/index",
