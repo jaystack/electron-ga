@@ -21,7 +21,9 @@
     "analytics",
     "electron"
   ],
-  "author": "",
+  "authors": [
+    "Péter Hauszknecht <peter.hauszknecht@jaystack.com> (https://github.com/jayhasyee)"
+  ],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/jaystack/electron-ga/issues"
